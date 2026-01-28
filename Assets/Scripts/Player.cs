@@ -14,6 +14,9 @@ public class Player : MonoBehaviour {
 
     private Vector2 velocity;
 
+    // Sprite
+    private SpriteRenderer sprite;
+
     // Using the Input system
     private PlayerInputActions inputActions;
     bool walk;
@@ -38,6 +41,8 @@ public class Player : MonoBehaviour {
         box = GetComponent<BoxCollider2D>();
         boxColliderheight = box.size.y * 0.5f; // make it half the size
         boxColliderWidth = box.size.x * 0.5f;
+        // Set sprite
+        sprite = GetComponent<SpriteRenderer>();
     }
 
     private void OnEnable()
@@ -95,10 +100,14 @@ public class Player : MonoBehaviour {
 
         if (walk)
         {
-            if (walk_left)
+            if (walk_left) {
                 moveSpeed = -walkVelocity;
-            else if (walk_right)
+                sprite.flipX = true;
+            }
+            else if (walk_right) {
                 moveSpeed = walkVelocity;
+                sprite.flipX = false;
+            }
             if (inputActions.Player.Sprint.IsPressed())
                 moveSpeed *= runMultiplier;
             pos.x += moveSpeed * Time.deltaTime;
