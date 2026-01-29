@@ -4,14 +4,16 @@ using UnityEngine;
 
 public class Player : MonoBehaviour {
 
+    // These are set in the editor
     public float walkVelocity = 7f;
-    public float jumpVelocity;
-    public float runMultiplier;
-    public float bounceVelocity;
-    public float gravity;
+    public float jumpVelocity = 20f;
+    public float runMultiplier = 2f;
+    public float bounceVelocity = 10f;
+    public float gravity = 65f;
     public LayerMask wallMask;
     public LayerMask floorMask;
 
+    // The velocity of the character is modified by movement input (moving) and raycasts into colliders (stopping)
     private Vector2 velocity;
 
     // Sprite
@@ -95,28 +97,32 @@ public class Player : MonoBehaviour {
         Vector3 pos = transform.localPosition;
         Vector3 scale = transform.localScale;
 
-        // --- HORIZONTAL MOVEMENT ---
-        float moveSpeed = 0f;
+        // Movement on the x axis
+        // Not used atm because velocity.x does this job
+        //float moveSpeed = 0f;
 
         if (walk)
         {
             if (walk_left) {
-                moveSpeed = -walkVelocity;
+                //moveSpeed = -walkVelocity;
+                velocity.x = -walkVelocity;
                 sprite.flipX = true;
             }
             else if (walk_right) {
-                moveSpeed = walkVelocity;
+                //moveSpeed = walkVelocity;
+                velocity.x = walkVelocity;
                 sprite.flipX = false;
             }
             if (inputActions.Player.Sprint.IsPressed())
-                moveSpeed *= runMultiplier;
-            pos.x += moveSpeed * Time.deltaTime;
+                velocity.x *= runMultiplier;
+            //pos.x += moveSpeed * Time.deltaTime;
             // Direction from movement, not scale
-            float direction = Mathf.Sign(moveSpeed);
+            float direction = Mathf.Sign(velocity.x);
             pos = CheckWallRays(pos, direction);
+            pos.x += velocity.x * Time.deltaTime;
         }
 
-        // --- JUMP ---
+        // Jumping
         if (jump && grounded)
         {
             velocity.y = jumpVelocity;
@@ -124,7 +130,7 @@ public class Player : MonoBehaviour {
             playerState = PlayerState.jumping;
         }
 
-        // --- VERTICAL MOVEMENT ---
+        // Movement on the y axis
         if (playerState == PlayerState.jumping || playerState == PlayerState.bouncing)
         {
             pos.y += velocity.y * Time.deltaTime;
@@ -188,11 +194,11 @@ public class Player : MonoBehaviour {
     Vector3 CheckWallRays(Vector3 pos, float direction)
     {
         // Only block if moving into wall
-        if (Mathf.Abs(velocity.x) < 0.001f)
-           return pos;
+        //if (Mathf.Abs(velocity.x) < 0.001f)
+           //return pos;
 
-        if (Mathf.Sign(velocity.x) != Mathf.Sign(direction))
-            return pos;
+        //if (Mathf.Sign(velocity.x) != Mathf.Sign(direction))
+            //return pos;
 
         float rayLength = groundRayLength;
         float halfHeight = boxColliderheight;
@@ -224,14 +230,15 @@ public class Player : MonoBehaviour {
         if (hit.collider)
         {
             // Clamp to wall
-            if (direction > 0)
-                pos.x = hit.point.x - halfWidth;
-            else
-                pos.x = hit.point.x + halfWidth;
+          //  if (direction > 0)
+               // pos.x = hit.point.x - halfWidth;
+            //else
+               // pos.x = hit.point.x + halfWidth;
 
             // Stop pushing into wall
             //if (grounded)
                 //moveSpeed = 0;
+            velocity.x = 0;
         }
 
         return pos;
