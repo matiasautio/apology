@@ -55,9 +55,14 @@ public class Player : MonoBehaviour {
         inputActions.Player.Move.canceled  += ctx => moveInput = Vector2.zero;
         // Setting callbacks for jumping
         inputActions.Player.Jump.performed += ctx => jump = true;
+        inputActions.Player.Jump.performed += ctx => debug_jump();
         inputActions.Player.Jump.canceled  += ctx => jump = false;
     }
 
+    private void debug_jump()
+    {
+        Debug.Log("Jump pressed!");
+    }
     private void OnDisable()
     {
         inputActions.Player.Disable();
@@ -98,25 +103,19 @@ public class Player : MonoBehaviour {
         Vector3 scale = transform.localScale;
 
         // Movement on the x axis
-        // Not used atm because velocity.x does this job
-        //float moveSpeed = 0f;
-
         if (walk)
         {
             if (walk_left) {
-                //moveSpeed = -walkVelocity;
                 velocity.x = -walkVelocity;
                 sprite.flipX = true;
             }
             else if (walk_right) {
-                //moveSpeed = walkVelocity;
                 velocity.x = walkVelocity;
                 sprite.flipX = false;
             }
             if (inputActions.Player.Sprint.IsPressed())
                 velocity.x *= runMultiplier;
-            //pos.x += moveSpeed * Time.deltaTime;
-            // Direction from movement, not scale
+            // Direction from movement
             float direction = Mathf.Sign(velocity.x);
             pos = CheckWallRays(pos, direction);
             pos.x += velocity.x * Time.deltaTime;
@@ -148,7 +147,7 @@ public class Player : MonoBehaviour {
             velocity = Vector2.zero;
         }
 
-        // --- COLLISIONS ---
+        // Checking collisions
         if (velocity.y <= 0)
             pos = CheckFloorRays(pos);
 
@@ -248,12 +247,8 @@ public class Player : MonoBehaviour {
 
     Vector3 CheckFloorRays(Vector3 pos)
     {
-        // If player is jumping, we don't need to check the ground rays
-        if (velocity.y > 0)
-        {
-            grounded = false;
-            return pos;
-        }
+        // TODO add "coytote time" to exiting a platform, to allow nicer jumping
+        // move the rear ray little bit outwards from the player if they are grounded
         Vector2 originLeft = new Vector2(pos.x - boxColliderWidth, pos.y - boxColliderheight);
         Vector2 originMiddle = new Vector2(pos.x, pos.y - boxColliderheight);
         Vector2 originRight = new Vector2(pos.x + boxColliderWidth, pos.y - boxColliderheight);
@@ -269,6 +264,8 @@ public class Player : MonoBehaviour {
 
         if (hit.collider && velocity.y <= 0)
         {
+            if (grounded == false)
+                Debug.Log("Standing on solid ground!");
             grounded = true;
             velocity.y = 0;
             // Snap to surface using extents, not bounds center
@@ -285,6 +282,8 @@ public class Player : MonoBehaviour {
         }
         else
         {
+            if (grounded == true)
+                Debug.Log("Standing on nothing!");
             grounded = false;
 
             if (playerState != PlayerState.jumping)

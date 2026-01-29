@@ -1016,6 +1016,10 @@ PrefabInstance:
       value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 6271437297766991614, guid: 021df0e763ede427892cd6eeb830cf64, type: 3}
+      propertyPath: walkVelocity
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6271437297766991614, guid: 021df0e763ede427892cd6eeb830cf64, type: 3}
       propertyPath: runMultiplier
       value: 2
       objectReference: {fileID: 0}
