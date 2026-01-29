@@ -1017,7 +1017,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6271437297766991614, guid: 021df0e763ede427892cd6eeb830cf64, type: 3}
       propertyPath: walkVelocity
-      value: 3
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6271437297766991614, guid: 021df0e763ede427892cd6eeb830cf64, type: 3}
       propertyPath: runMultiplier
@@ -1066,7 +1066,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 414000, guid: 953e6114243c74ced85f3e6747b6a9f7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.39
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 414000, guid: 953e6114243c74ced85f3e6747b6a9f7, type: 3}
       propertyPath: m_LocalPosition.z
