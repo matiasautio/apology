@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: a2aa76444338147a99f84bc14a623df2
+guid: 8541bf17076134495b08dbdef6ec1778
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7786999238517005483
-    second: nario_idle_0
+      213: -8046960930267070708
+    second: enemy_walk_1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: nario_idle_0
+      name: enemy_walk_1_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 32
-        height: 64
+        height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: bac1b06dc8af01c60800000000000000
-      internalID: 7786999238517005483
+      spriteID: c0ffbf52ba3735090800000000000000
+      internalID: -8046960930267070708
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 53a45f5c84a8548929a951efab8617d2
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      nario_idle_0: 7786999238517005483
+      enemy_walk_1_0: -8046960930267070708
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

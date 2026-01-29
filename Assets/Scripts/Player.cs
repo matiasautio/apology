@@ -88,7 +88,7 @@ public class Player : MonoBehaviour {
 
     public void Dead () {
         playerState = PlayerState.dead;
-        GetComponent<Animator>().SetBool("isDead", true);
+        //GetComponent<Animator>().SetBool("isDead", true);
         GetComponent<Collider2D>().enabled = false;
     }
 
@@ -254,14 +254,14 @@ public class Player : MonoBehaviour {
             grounded = false;
             return pos;
         }
-        Vector2 originLeft = new Vector2(pos.x - 0.3f, pos.y - boxColliderheight);
+        Vector2 originLeft = new Vector2(pos.x - boxColliderWidth, pos.y - boxColliderheight);
         Vector2 originMiddle = new Vector2(pos.x, pos.y - boxColliderheight);
-        Vector2 originRight = new Vector2(pos.x + 0.3f, pos.y - boxColliderheight);
+        Vector2 originRight = new Vector2(pos.x + boxColliderWidth, pos.y - boxColliderheight);
 
         RaycastHit2D hitLeft   = Physics2D.Raycast(originLeft, Vector2.down, groundRayLength, floorMask);
         RaycastHit2D hitMiddle = Physics2D.Raycast(originMiddle, Vector2.down, groundRayLength, floorMask);
         RaycastHit2D hitRight  = Physics2D.Raycast(originRight, Vector2.down, groundRayLength, floorMask);
-        //Debug.DrawRay(originMiddle, Vector2.down * groundRayLength, Color.red);
+        //Debug.DrawRay(originLeft, Vector2.down * groundRayLength, Color.red);
 
         RaycastHit2D hit = hitLeft.collider ? hitLeft :
                         hitMiddle.collider ? hitMiddle :
@@ -277,6 +277,7 @@ public class Player : MonoBehaviour {
             if (hit.collider.CompareTag("Enemy"))
             {
                 bounce = true;
+                hit.collider.GetComponent<EnemyAI>().Crush();
             }
 
             if (playerState == PlayerState.jumping)
@@ -344,16 +345,10 @@ public class Player : MonoBehaviour {
         return pos;
     }
 
-    
-
-    void Fall (){
-
+    void Fall(){
         velocity.y = 0;
-
         playerState = PlayerState.jumping;
-
         bounce = false;
         grounded = false;
-
     }
 }
