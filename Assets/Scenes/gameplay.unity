@@ -1404,6 +1404,120 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8140820938250540352, guid: 161bb0eed9bb44d759779ba6c7773773, type: 3}
   m_PrefabInstance: {fileID: 2123720671}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &5401639871610012421
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3138049187058517891, guid: 39f1f4b6b286f4c83a64af83851ce316, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.96
+      objectReference: {fileID: 0}
+    - target: {fileID: 3138049187058517891, guid: 39f1f4b6b286f4c83a64af83851ce316, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3138049187058517891, guid: 39f1f4b6b286f4c83a64af83851ce316, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3138049187058517891, guid: 39f1f4b6b286f4c83a64af83851ce316, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3138049187058517891, guid: 39f1f4b6b286f4c83a64af83851ce316, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3138049187058517891, guid: 39f1f4b6b286f4c83a64af83851ce316, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3138049187058517891, guid: 39f1f4b6b286f4c83a64af83851ce316, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3138049187058517891, guid: 39f1f4b6b286f4c83a64af83851ce316, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3138049187058517891, guid: 39f1f4b6b286f4c83a64af83851ce316, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3138049187058517891, guid: 39f1f4b6b286f4c83a64af83851ce316, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5875244634272503604, guid: 39f1f4b6b286f4c83a64af83851ce316, type: 3}
+      propertyPath: m_Name
+      value: NiwakaSenbei
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 39f1f4b6b286f4c83a64af83851ce316, type: 3}
+--- !u!1001 &7967243098427809266
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1078940394582467058, guid: 7e0c8dca575d2454f82aa1631cb1f1e8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1078940394582467058, guid: 7e0c8dca575d2454f82aa1631cb1f1e8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1078940394582467058, guid: 7e0c8dca575d2454f82aa1631cb1f1e8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1078940394582467058, guid: 7e0c8dca575d2454f82aa1631cb1f1e8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1078940394582467058, guid: 7e0c8dca575d2454f82aa1631cb1f1e8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1078940394582467058, guid: 7e0c8dca575d2454f82aa1631cb1f1e8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1078940394582467058, guid: 7e0c8dca575d2454f82aa1631cb1f1e8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1078940394582467058, guid: 7e0c8dca575d2454f82aa1631cb1f1e8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1078940394582467058, guid: 7e0c8dca575d2454f82aa1631cb1f1e8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1078940394582467058, guid: 7e0c8dca575d2454f82aa1631cb1f1e8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5826861456568047857, guid: 7e0c8dca575d2454f82aa1631cb1f1e8, type: 3}
+      propertyPath: m_Name
+      value: Niwaka
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 7e0c8dca575d2454f82aa1631cb1f1e8, type: 3}
 --- !u!1001 &8176966312977414157
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1476,3 +1590,5 @@ SceneRoots:
   - {fileID: 29731947}
   - {fileID: 441998686}
   - {fileID: 974123836}
+  - {fileID: 7967243098427809266}
+  - {fileID: 5401639871610012421}

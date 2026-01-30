@@ -37,6 +37,10 @@ public class Player : MonoBehaviour {
     float boxColliderheight;
     float boxColliderWidth;
 
+    // Items
+    private int niwakas = 0;
+    private int niwakaSenbeis = 0;
+
 
     private void Awake()
     {
@@ -94,10 +98,14 @@ public class Player : MonoBehaviour {
         UpdateAnimationStates ();
     }
 
-    public void Dead () {
+    public void Dead ()
+    {
+        // Currently not used! We need to come up with the gameplay logic for this first.
+        /*
         playerState = PlayerState.dead;
         animator.SetBool("dead", true);
         GetComponent<Collider2D>().enabled = false;
+        */
     }
 
     void UpdatePlayerPosition()
@@ -333,5 +341,17 @@ public class Player : MonoBehaviour {
         playerState = PlayerState.jumping;
         bounce = false;
         grounded = false;
+    }
+
+    // Items
+    public void AddNiwaka()
+    {
+        niwakas += 1;
+        Debug.Log("Niwaka added, now player has " + niwakas);
+    }
+    public void AddNiwakaSenbei()
+    {
+        niwakaSenbeis += 1;
+        Debug.Log("Niwaka Senbei added, now player has " + niwakaSenbeis);
     }
 }
