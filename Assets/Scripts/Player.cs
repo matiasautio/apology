@@ -18,12 +18,14 @@ public class Player : MonoBehaviour {
 
     // Sprite
     private SpriteRenderer sprite;
+    private Animator animator;
 
     // Using the Input system
     private PlayerInputActions inputActions;
     bool walk;
     bool walk_left;
     bool walk_right;
+    bool run;
     bool jump;
     private Vector2 moveInput;
 
@@ -35,6 +37,16 @@ public class Player : MonoBehaviour {
     float boxColliderheight;
     float boxColliderWidth;
 
+    // Items
+    int niwakas = 0;
+    int niwakaSenbeis = 0;
+
+    // Mental state
+    [SerializeField] float mentalStateInterval = 10f;
+
+    float mentalStateTimer = 0f;
+    int mentalState = 0;
+
 
     private void Awake()
     {
@@ -45,6 +57,7 @@ public class Player : MonoBehaviour {
         boxColliderWidth = box.size.x * 0.5f;
         // Set sprite
         sprite = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
     }
 
     private void OnEnable()
@@ -61,7 +74,7 @@ public class Player : MonoBehaviour {
 
     private void debug_jump()
     {
-        Debug.Log("Jump pressed!");
+        //Debug.Log("Jump pressed!");
     }
     private void OnDisable()
     {
@@ -85,16 +98,22 @@ public class Player : MonoBehaviour {
         Fall();
     }
 
-    void Update() {
-        CheckPlayerInput ();
-        UpdatePlayerPosition ();
-        //UpdateAnimationStates ();
+    void Update()
+    {
+        CheckPlayerInput();
+        UpdatePlayerPosition();
+        UpdateAnimationStates();
+        UpdateMentalStateTimer();
     }
 
-    public void Dead () {
+    public void Dead ()
+    {
+        // Currently not used! We need to come up with the gameplay logic for this first.
+        /*
         playerState = PlayerState.dead;
-        //GetComponent<Animator>().SetBool("isDead", true);
+        animator.SetBool("dead", true);
         GetComponent<Collider2D>().enabled = false;
+        */
     }
 
     void UpdatePlayerPosition()
@@ -113,8 +132,14 @@ public class Player : MonoBehaviour {
                 velocity.x = walkVelocity;
                 sprite.flipX = false;
             }
-            if (inputActions.Player.Sprint.IsPressed())
+            if (inputActions.Player.Sprint.IsPressed()) {
+                run = true;
                 velocity.x *= runMultiplier;
+            }
+            else
+            {
+                run = false;
+            }
             // Direction from movement
             float direction = Mathf.Sign(velocity.x);
             pos = CheckWallRays(pos, direction);
@@ -158,26 +183,17 @@ public class Player : MonoBehaviour {
         transform.localScale = scale;
     }
 
-    void UpdateAnimationStates () {
+    void UpdateAnimationStates()
+    {
+        bool isIdle = grounded && !walk;
+        bool isWalking = grounded && walk;
+        bool isRunning = isWalking && run;
 
-        if (grounded && !walk && !bounce) {
-
-            GetComponent<Animator>().SetBool("isJumping", false);
-            GetComponent<Animator>().SetBool("isRunning", false);        
-        }
-
-        if (grounded && walk) {
-
-            GetComponent<Animator>().SetBool("isJumping", false);
-            GetComponent<Animator>().SetBool("isRunning", true);
-        }
-
-        if (playerState == PlayerState.jumping) {
-
-            GetComponent<Animator>().SetBool("isJumping", true);
-            GetComponent<Animator>().SetBool("isRunning", false);
-
-        }
+        animator.SetBool("idle", isIdle);
+        animator.SetBool("walk", isWalking);
+        animator.SetBool("run", isRunning);
+        
+        //animator.SetTrigger("jump", !grounded);
     }
 
     void CheckPlayerInput()
@@ -192,13 +208,6 @@ public class Player : MonoBehaviour {
 
     Vector3 CheckWallRays(Vector3 pos, float direction)
     {
-        // Only block if moving into wall
-        //if (Mathf.Abs(velocity.x) < 0.001f)
-           //return pos;
-
-        //if (Mathf.Sign(velocity.x) != Mathf.Sign(direction))
-            //return pos;
-
         float rayLength = groundRayLength;
         float halfHeight = boxColliderheight;
         float halfWidth  = boxColliderWidth;
@@ -228,22 +237,11 @@ public class Player : MonoBehaviour {
 
         if (hit.collider)
         {
-            // Clamp to wall
-          //  if (direction > 0)
-               // pos.x = hit.point.x - halfWidth;
-            //else
-               // pos.x = hit.point.x + halfWidth;
-
-            // Stop pushing into wall
-            //if (grounded)
-                //moveSpeed = 0;
             velocity.x = 0;
         }
 
         return pos;
     }
-
-
 
     Vector3 CheckFloorRays(Vector3 pos)
     {
@@ -265,7 +263,7 @@ public class Player : MonoBehaviour {
         if (hit.collider && velocity.y <= 0)
         {
             if (grounded == false)
-                Debug.Log("Standing on solid ground!");
+                //Debug.Log("Standing on solid ground!");
             grounded = true;
             velocity.y = 0;
             // Snap to surface using extents, not bounds center
@@ -283,7 +281,7 @@ public class Player : MonoBehaviour {
         else
         {
             if (grounded == true)
-                Debug.Log("Standing on nothing!");
+                //Debug.Log("Standing on nothing!");
             grounded = false;
 
             if (playerState != PlayerState.jumping)
@@ -292,7 +290,6 @@ public class Player : MonoBehaviour {
 
         return pos;
     }
-
 
     Vector3 CheckCeilingRays(Vector3 pos)
     {
@@ -349,5 +346,44 @@ public class Player : MonoBehaviour {
         playerState = PlayerState.jumping;
         bounce = false;
         grounded = false;
+    }
+
+    // Items
+    public void AddNiwaka()
+    {
+        niwakas += 1;
+        Debug.Log("Niwaka added, now player has " + niwakas);
+    }
+    public void AddNiwakaSenbei()
+    {
+        niwakaSenbeis += 1;
+        Debug.Log("Niwaka Senbei added, now player has " + niwakaSenbeis);
+    }
+
+    // Mental state
+    void UpdateMentalStateTimer()
+    {
+        mentalStateTimer += Time.deltaTime;
+
+        if (mentalStateTimer >= mentalStateInterval)
+        {
+            mentalStateTimer -= mentalStateInterval; // allows catch-up if frame is long
+            AddMentalState(1);
+        }
+    }
+    public void TakeDamage(int amount)
+    {
+        ResetMentalStateTimer();
+    }
+
+    void ResetMentalStateTimer()
+    {
+        mentalStateTimer = 0f;
+    }
+
+    void AddMentalState(int point)
+    {
+        mentalState += point;
+        Debug.Log("Mental state increased, now it is " + mentalState);
     }
 }
