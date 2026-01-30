@@ -34,6 +34,8 @@ public class EnemyAI : MonoBehaviour {
 
     private EnemyState state = EnemyState.falling;
 
+    [SerializeField] int damage = 1;
+
     // Start is called before the first frame update
     void Start() {
 
@@ -143,14 +145,6 @@ public class EnemyAI : MonoBehaviour {
             velocity.y = 0;
             state = EnemyState.walking; 
             pos.y = hit.point.y + boxColliderheight;
-
-            if (hit.collider.CompareTag("Player"))
-            {
-                hit.collider.GetComponent<Player>().Dead();
-                //GetComponent<Animator>().SetBool("isIdle", true);
-                StartCoroutine(PlayerDeadWait());
-                state = EnemyState.idle;
-            }
         }
         else
         {
@@ -161,6 +155,7 @@ public class EnemyAI : MonoBehaviour {
         return pos;
     }
 
+    // TODO modify this to use the better raycast setup
     void CheckWalls (Vector3 pos, float direction) {
 
         Vector2 originTop = new Vector2 (pos.x + direction * 0.4f, pos.y + .5f - 0.2f);
@@ -182,16 +177,6 @@ public class EnemyAI : MonoBehaviour {
             } else if (wallBottom) {
                 hitRay = wallBottom;
             }
-
-            if (hitRay.collider.tag == "Player") {
-
-                hitRay.collider.GetComponent<Player>().Dead();
-                GetComponent<Animator>().SetBool("isIdle", true);
-                this.gameObject.transform.localPosition = new Vector3 (pos.x, pos.y, -1.8f);
-                StartCoroutine(PlayerDeadWait());
-                state = EnemyState.idle;
-            }
-
             isWalkingLeft = !isWalkingLeft;
         }
     }
@@ -200,10 +185,23 @@ public class EnemyAI : MonoBehaviour {
         enabled = true;
     }
 
-    void Fall () {
+    void Fall() {
         velocity.y = 0;
         state = EnemyState.falling;
         grounded = false;
+    }
+
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        Debug.Log(col.collider + " enterd");
+        if (col.collider.CompareTag("Player"))
+        {
+            DamagePlayer(col.collider.GetComponent<Player>());
+        }
+    }
+    void DamagePlayer(Player player)
+    {
+        player.TakeDamage(damage);
     }
 
     IEnumerator PlayerDeadWait() {

@@ -212,3 +212,4 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 129
   timeBeforeDestroy: 1
+  damage: 1

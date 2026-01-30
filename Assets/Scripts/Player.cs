@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour {
 
@@ -30,12 +31,19 @@ public class Player : MonoBehaviour {
     private Vector2 moveInput;
 
     // Raycasting
-    const float groundRayLength = 0.05f;
+    const float groundRayLength = 0.1f;
     // Player height for raycasting
     // Get the collider box size, we are gonan use it to set the ray origin
     private BoxCollider2D box;
     float boxColliderheight;
     float boxColliderWidth;
+
+    // HP
+    [SerializeField] int health = 3;
+    [SerializeField] float invulnerableDuration = 1.5f;
+    [SerializeField] float flickerInterval = 0.1f;
+    bool isInvulnerable = false;
+    float invulnerableTimer = 0f;
 
     // Items
     int niwakas = 0;
@@ -103,17 +111,14 @@ public class Player : MonoBehaviour {
         CheckPlayerInput();
         UpdatePlayerPosition();
         UpdateAnimationStates();
+        UpdateInvulnerability();
         UpdateMentalStateTimer();
     }
 
-    public void Dead ()
-    {
-        // Currently not used! We need to come up with the gameplay logic for this first.
-        /*
+    void Dead ()
+    {   
         playerState = PlayerState.dead;
-        animator.SetBool("dead", true);
-        GetComponent<Collider2D>().enabled = false;
-        */
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     void UpdatePlayerPosition()
@@ -159,6 +164,8 @@ public class Player : MonoBehaviour {
         {
             pos.y += velocity.y * Time.deltaTime;
             velocity.y -= gravity * Time.deltaTime;
+            // Clamp downward velocity
+            velocity.y = Mathf.Max(velocity.y, -20f);
         }
 
         if (bounce && playerState != PlayerState.bouncing)
@@ -267,7 +274,9 @@ public class Player : MonoBehaviour {
             grounded = true;
             velocity.y = 0;
             // Snap to surface using extents, not bounds center
-            pos.y = hit.point.y + boxColliderheight;
+            // Add "skin" to fix webgl clipping problem
+            const float groundSkin = 0.01f;
+            pos.y = hit.point.y + boxColliderheight + groundSkin;
 
             if (hit.collider.CompareTag("Enemy"))
             {
@@ -360,6 +369,56 @@ public class Player : MonoBehaviour {
         Debug.Log("Niwaka Senbei added, now player has " + niwakaSenbeis);
     }
 
+    // Health
+    public void TakeDamage(int amount)
+    {   
+        if (isInvulnerable || playerState == PlayerState.dead)
+        return;
+
+        StartInvulnerability();
+        ResetMentalStateTimer();
+        health -= amount;
+        Debug.Log("Player took damage, health is now " + health);
+        if (health == 0)
+        {
+            Dead();
+        }
+    }
+    void StartInvulnerability()
+    {
+        isInvulnerable = true;
+        invulnerableTimer = invulnerableDuration;
+
+        StartCoroutine(FlickerRoutine());
+    }
+    void UpdateInvulnerability()
+    {
+        if (!isInvulnerable)
+            return;
+
+        invulnerableTimer -= Time.deltaTime;
+
+        if (invulnerableTimer <= 0f)
+        {
+            EndInvulnerability();
+        }
+    }
+    void EndInvulnerability()
+    {
+        isInvulnerable = false;
+        sprite.enabled = true;
+    }
+    IEnumerator FlickerRoutine()
+    {
+        while (isInvulnerable)
+        {
+            sprite.enabled = !sprite.enabled;
+            yield return new WaitForSeconds(flickerInterval);
+        }
+
+        sprite.enabled = true;
+    }
+
     // Mental state
     void UpdateMentalStateTimer()
     {
@@ -370,10 +429,6 @@ public class Player : MonoBehaviour {
             mentalStateTimer -= mentalStateInterval; // allows catch-up if frame is long
             AddMentalState(1);
         }
-    }
-    public void TakeDamage(int amount)
-    {
-        ResetMentalStateTimer();
     }
 
     void ResetMentalStateTimer()
