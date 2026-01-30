@@ -18,12 +18,14 @@ public class Player : MonoBehaviour {
 
     // Sprite
     private SpriteRenderer sprite;
+    private Animator animator;
 
     // Using the Input system
     private PlayerInputActions inputActions;
     bool walk;
     bool walk_left;
     bool walk_right;
+    bool run;
     bool jump;
     private Vector2 moveInput;
 
@@ -45,6 +47,7 @@ public class Player : MonoBehaviour {
         boxColliderWidth = box.size.x * 0.5f;
         // Set sprite
         sprite = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
     }
 
     private void OnEnable()
@@ -61,7 +64,7 @@ public class Player : MonoBehaviour {
 
     private void debug_jump()
     {
-        Debug.Log("Jump pressed!");
+        //Debug.Log("Jump pressed!");
     }
     private void OnDisable()
     {
@@ -88,12 +91,12 @@ public class Player : MonoBehaviour {
     void Update() {
         CheckPlayerInput ();
         UpdatePlayerPosition ();
-        //UpdateAnimationStates ();
+        UpdateAnimationStates ();
     }
 
     public void Dead () {
         playerState = PlayerState.dead;
-        //GetComponent<Animator>().SetBool("isDead", true);
+        animator.SetBool("dead", true);
         GetComponent<Collider2D>().enabled = false;
     }
 
@@ -113,8 +116,14 @@ public class Player : MonoBehaviour {
                 velocity.x = walkVelocity;
                 sprite.flipX = false;
             }
-            if (inputActions.Player.Sprint.IsPressed())
+            if (inputActions.Player.Sprint.IsPressed()) {
+                run = true;
                 velocity.x *= runMultiplier;
+            }
+            else
+            {
+                run = false;
+            }
             // Direction from movement
             float direction = Mathf.Sign(velocity.x);
             pos = CheckWallRays(pos, direction);
@@ -158,26 +167,17 @@ public class Player : MonoBehaviour {
         transform.localScale = scale;
     }
 
-    void UpdateAnimationStates () {
+    void UpdateAnimationStates()
+    {
+        bool isIdle = grounded && !walk;
+        bool isWalking = grounded && walk;
+        bool isRunning = isWalking && run;
 
-        if (grounded && !walk && !bounce) {
-
-            GetComponent<Animator>().SetBool("isJumping", false);
-            GetComponent<Animator>().SetBool("isRunning", false);        
-        }
-
-        if (grounded && walk) {
-
-            GetComponent<Animator>().SetBool("isJumping", false);
-            GetComponent<Animator>().SetBool("isRunning", true);
-        }
-
-        if (playerState == PlayerState.jumping) {
-
-            GetComponent<Animator>().SetBool("isJumping", true);
-            GetComponent<Animator>().SetBool("isRunning", false);
-
-        }
+        animator.SetBool("idle", isIdle);
+        animator.SetBool("walk", isWalking);
+        animator.SetBool("run", isRunning);
+        
+        //animator.SetTrigger("jump", !grounded);
     }
 
     void CheckPlayerInput()
@@ -192,13 +192,6 @@ public class Player : MonoBehaviour {
 
     Vector3 CheckWallRays(Vector3 pos, float direction)
     {
-        // Only block if moving into wall
-        //if (Mathf.Abs(velocity.x) < 0.001f)
-           //return pos;
-
-        //if (Mathf.Sign(velocity.x) != Mathf.Sign(direction))
-            //return pos;
-
         float rayLength = groundRayLength;
         float halfHeight = boxColliderheight;
         float halfWidth  = boxColliderWidth;
@@ -228,15 +221,6 @@ public class Player : MonoBehaviour {
 
         if (hit.collider)
         {
-            // Clamp to wall
-          //  if (direction > 0)
-               // pos.x = hit.point.x - halfWidth;
-            //else
-               // pos.x = hit.point.x + halfWidth;
-
-            // Stop pushing into wall
-            //if (grounded)
-                //moveSpeed = 0;
             velocity.x = 0;
         }
 
@@ -265,7 +249,7 @@ public class Player : MonoBehaviour {
         if (hit.collider && velocity.y <= 0)
         {
             if (grounded == false)
-                Debug.Log("Standing on solid ground!");
+                //Debug.Log("Standing on solid ground!");
             grounded = true;
             velocity.y = 0;
             // Snap to surface using extents, not bounds center
@@ -283,7 +267,7 @@ public class Player : MonoBehaviour {
         else
         {
             if (grounded == true)
-                Debug.Log("Standing on nothing!");
+                //Debug.Log("Standing on nothing!");
             grounded = false;
 
             if (playerState != PlayerState.jumping)
