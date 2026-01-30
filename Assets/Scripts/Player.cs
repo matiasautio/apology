@@ -38,8 +38,14 @@ public class Player : MonoBehaviour {
     float boxColliderWidth;
 
     // Items
-    private int niwakas = 0;
-    private int niwakaSenbeis = 0;
+    int niwakas = 0;
+    int niwakaSenbeis = 0;
+
+    // Mental state
+    [SerializeField] float mentalStateInterval = 10f;
+
+    float mentalStateTimer = 0f;
+    int mentalState = 0;
 
 
     private void Awake()
@@ -92,10 +98,12 @@ public class Player : MonoBehaviour {
         Fall();
     }
 
-    void Update() {
-        CheckPlayerInput ();
-        UpdatePlayerPosition ();
-        UpdateAnimationStates ();
+    void Update()
+    {
+        CheckPlayerInput();
+        UpdatePlayerPosition();
+        UpdateAnimationStates();
+        UpdateMentalStateTimer();
     }
 
     public void Dead ()
@@ -235,8 +243,6 @@ public class Player : MonoBehaviour {
         return pos;
     }
 
-
-
     Vector3 CheckFloorRays(Vector3 pos)
     {
         // TODO add "coytote time" to exiting a platform, to allow nicer jumping
@@ -284,7 +290,6 @@ public class Player : MonoBehaviour {
 
         return pos;
     }
-
 
     Vector3 CheckCeilingRays(Vector3 pos)
     {
@@ -353,5 +358,32 @@ public class Player : MonoBehaviour {
     {
         niwakaSenbeis += 1;
         Debug.Log("Niwaka Senbei added, now player has " + niwakaSenbeis);
+    }
+
+    // Mental state
+    void UpdateMentalStateTimer()
+    {
+        mentalStateTimer += Time.deltaTime;
+
+        if (mentalStateTimer >= mentalStateInterval)
+        {
+            mentalStateTimer -= mentalStateInterval; // allows catch-up if frame is long
+            AddMentalState(1);
+        }
+    }
+    public void TakeDamage(int amount)
+    {
+        ResetMentalStateTimer();
+    }
+
+    void ResetMentalStateTimer()
+    {
+        mentalStateTimer = 0f;
+    }
+
+    void AddMentalState(int point)
+    {
+        mentalState += point;
+        Debug.Log("Mental state increased, now it is " + mentalState);
     }
 }
