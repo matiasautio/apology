@@ -35,7 +35,7 @@ public class Rock : MonoBehaviour
     
         if (collision.collider.CompareTag("Player"))
         {
-            collision.collider.GetComponent<Player>()?.TakeDamage(damage);
+            collision.collider.GetComponent<PlayerHealth>()?.TakeDamage(damage);
             Destroy(gameObject);
             return;
         }

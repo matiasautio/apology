@@ -24,7 +24,7 @@ public class EnemyAI : MonoBehaviour {
 
     public float timeBeforeDestroy = 1.0f;
 
-    public enum EnemyState {
+    protected enum EnemyState {
 
         walking,
         falling,
@@ -32,14 +32,14 @@ public class EnemyAI : MonoBehaviour {
         idle
     }
 
-    public EnemyState state = EnemyState.falling;
+    protected EnemyState state = EnemyState.falling;
 
     [SerializeField] int damage = 1;
 
-    public bool hasBeenVisible = false;
+    protected bool hasBeenVisible = false;
     // Sprite
     private SpriteRenderer sprite;
-    public Animator animator;
+    protected Animator animator;
 
     protected virtual void Awake()
     {
@@ -226,7 +226,10 @@ public class EnemyAI : MonoBehaviour {
 
         if (hit.collider)
         {
-            isWalkingLeft = !isWalkingLeft;
+            if (!hit.collider.CompareTag("Player"))
+            {
+                isWalkingLeft = !isWalkingLeft;
+            }
         }
     }
     
@@ -244,11 +247,12 @@ public class EnemyAI : MonoBehaviour {
     void OnCollisionEnter2D(Collision2D col)
     {
         if (col.collider.CompareTag("Player"))
-        {
-            DamagePlayer(col.collider.GetComponent<Player>());
+        {   
+            // Handled by the health script
+            //DamagePlayer(col.collider.GetComponent<PlayerHealth>());
         }
     }
-    void DamagePlayer(Player player)
+    void DamagePlayer(PlayerHealth player)
     {
         player.TakeDamage(damage);
     }

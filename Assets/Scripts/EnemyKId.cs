@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemyKId : EnemyAI
+public class EnemyKid : EnemyAI
 {
 
     [SerializeField] GameObject rockPrefab;

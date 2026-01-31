@@ -38,13 +38,6 @@ public class Player : MonoBehaviour {
     float boxColliderheight;
     float boxColliderWidth;
 
-    // HP
-    [SerializeField] int health = 3;
-    [SerializeField] float invulnerableDuration = 1.5f;
-    [SerializeField] float flickerInterval = 0.1f;
-    bool isInvulnerable = false;
-    float invulnerableTimer = 0f;
-
     // Items
     int niwakas = 0;
     int niwakaSenbeis = 0;
@@ -58,6 +51,9 @@ public class Player : MonoBehaviour {
     [SerializeField] private float mentalState = 3f;
 
     public float MentalState => mentalState;
+
+    // Health
+    PlayerHealth playerHealth;
 
     private void Awake()
     {
@@ -81,6 +77,8 @@ public class Player : MonoBehaviour {
         inputActions.Player.Jump.performed += ctx => jump = true;
         inputActions.Player.Jump.performed += ctx => debug_jump();
         inputActions.Player.Jump.canceled  += ctx => jump = false;
+        // Get the player health
+        playerHealth = GetComponent<PlayerHealth>();
     }
     private void debug_jump()
     {
@@ -103,7 +101,8 @@ public class Player : MonoBehaviour {
     private bool grounded = false;
     private bool bounce = false;
 
-    void Start() {
+    void Start()
+    {
         Fall();
     }
 
@@ -112,11 +111,10 @@ public class Player : MonoBehaviour {
         CheckPlayerInput();
         UpdatePlayerPosition();
         UpdateAnimationStates();
-        UpdateInvulnerability();
         UpdateMentalStateTimer();
     }
 
-    void Dead ()
+    public void Dead ()
     {   
         playerState = PlayerState.dead;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -281,7 +279,7 @@ public class Player : MonoBehaviour {
 
             if (hit.collider.CompareTag("Enemy"))
             {
-                bounce = true;
+                //bounce = true;
                 //hit.collider.GetComponent<EnemyAI>().Crush();
             }
 
@@ -362,63 +360,23 @@ public class Player : MonoBehaviour {
     public void AddNiwaka()
     {
         niwakas += 1;
+        playerHealth.BecomeInvincible();
         Debug.Log("Niwaka added, now player has " + niwakas);
     }
     public void AddNiwakaSenbei()
     {
         niwakaSenbeis += 1;
+        playerHealth.Heal(1);
         Debug.Log("Niwaka Senbei added, now player has " + niwakaSenbeis);
     }
 
     // Health
-    public void TakeDamage(int amount)
+    public void TakeDamage()
     {   
-        if (isInvulnerable || playerState == PlayerState.dead)
-        return;
-
-        StartInvulnerability();
+        //if (isInvulnerable || playerState == PlayerState.dead)
+            //return;
         ResetMentalStateTimer();
         SetMentalState(mentalState - 1f);
-        health -= amount;
-        Debug.Log("Player took damage, health is now " + health);
-        if (health == 0)
-        {
-            Dead();
-        }
-    }
-    void StartInvulnerability()
-    {
-        isInvulnerable = true;
-        invulnerableTimer = invulnerableDuration;
-
-        StartCoroutine(FlickerRoutine());
-    }
-    void UpdateInvulnerability()
-    {
-        if (!isInvulnerable)
-            return;
-
-        invulnerableTimer -= Time.deltaTime;
-
-        if (invulnerableTimer <= 0f)
-        {
-            EndInvulnerability();
-        }
-    }
-    void EndInvulnerability()
-    {
-        isInvulnerable = false;
-        sprite.enabled = true;
-    }
-    IEnumerator FlickerRoutine()
-    {
-        while (isInvulnerable)
-        {
-            sprite.enabled = !sprite.enabled;
-            yield return new WaitForSeconds(flickerInterval);
-        }
-
-        sprite.enabled = true;
     }
 
     // Mental state

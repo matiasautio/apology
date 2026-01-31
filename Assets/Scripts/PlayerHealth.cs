@@ -3,6 +3,7 @@ using System.Collections;
 
 public class PlayerHealth : MonoBehaviour
 {
+    [SerializeField] Player player;
     public int maxHp = 3;
     private int currentHp;
     public float invincibilityTime = 1.5f; // 無敵時間
@@ -18,8 +19,8 @@ public class PlayerHealth : MonoBehaviour
     {
         Debug.Log("a");
         currentHp = maxHp;
-        rb = GetComponent<Rigidbody2D>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        rb = player.GetComponent<Rigidbody2D>();
+        spriteRenderer = player.GetComponent<SpriteRenderer>();
 
         UpdateHPUI(); // UIを更新
     }
@@ -50,7 +51,7 @@ public class PlayerHealth : MonoBehaviour
         string otherName = (otherGO != null) ? otherGO.name : "(no-go)";
         string otherLayer = (otherGO != null) ? LayerMask.LayerToName(otherGO.layer) : "(no-go)";
 
-        Debug.Log($"[PlayerHealth] Collision with '{otherName}' (tag:{otherTag}, layer:{otherLayer}), colliderIsTrigger:{(collision.collider != null ? collision.collider.isTrigger.ToString() : "n/a")}, contacts:{collision.contactCount}, otherRb:{(collision.rigidbody!=null?collision.rigidbody.bodyType.ToString():"none")}");
+        //Debug.Log($"[PlayerHealth] Collision with '{otherName}' (tag:{otherTag}, layer:{otherLayer}), colliderIsTrigger:{(collision.collider != null ? collision.collider.isTrigger.ToString() : "n/a")}, contacts:{collision.contactCount}, otherRb:{(collision.rigidbody!=null?collision.rigidbody.bodyType.ToString():"none")}");
 
         if (isInvincible)
         {
@@ -77,31 +78,36 @@ public class PlayerHealth : MonoBehaviour
         }
         else
         {
-            Debug.Log($"[PlayerHealth] Collision ignored — not tagged 'Enemy' (actual tag: {otherTag})");
+            //Debug.Log($"[PlayerHealth] Collision ignored — not tagged 'Enemy' (actual tag: {otherTag})");
         }
     }
 
-    void TakeDamage(int damage)
+    public void TakeDamage(int damage)
     {
         currentHp -= damage;
         Debug.Log("痛い！ 残りHP: " + currentHp);
-
+        player.TakeDamage();
         UpdateHPUI();
-
         if (currentHp <= 0)
         {
             Die();
         }
         else
         {
-            StartCoroutine(BecomeInvincible());
+            BecomeInvincible();
         }
     }
 
+    public void BecomeInvincible()
+    {
+        StartCoroutine(StartInvincibility());
+    }
+
     // 無敵時間と点滅の演出
-    private IEnumerator BecomeInvincible()
+    private IEnumerator StartInvincibility()
     {
         isInvincible = true;
+        gameObject.layer = LayerMask.NameToLayer("PlayerInvincible");
         if (spriteRenderer == null) yield break;
 
         float blinkInterval = 0.1f;
@@ -115,6 +121,7 @@ public class PlayerHealth : MonoBehaviour
 
         spriteRenderer.enabled = true;
         isInvincible = false;
+        gameObject.layer = LayerMask.NameToLayer("Player");
     }
 
     // アイテム（煎餅）で回復した時もこれを呼ぶ
@@ -144,5 +151,6 @@ public class PlayerHealth : MonoBehaviour
     void Die()
     {
         Debug.Log("ゲームオーバー");
+        player.Dead();
     }
 }
