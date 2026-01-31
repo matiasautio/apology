@@ -53,8 +53,11 @@ public class Player : MonoBehaviour {
     [SerializeField] float mentalStateInterval = 10f;
 
     float mentalStateTimer = 0f;
-    int mentalState = 0;
+    public event System.Action<float> OnMentalStateChanged;
 
+    [SerializeField] private float mentalState = 3f;
+
+    public float MentalState => mentalState;
 
     private void Awake()
     {
@@ -79,7 +82,6 @@ public class Player : MonoBehaviour {
         inputActions.Player.Jump.performed += ctx => debug_jump();
         inputActions.Player.Jump.canceled  += ctx => jump = false;
     }
-
     private void debug_jump()
     {
         //Debug.Log("Jump pressed!");
@@ -88,7 +90,6 @@ public class Player : MonoBehaviour {
     {
         inputActions.Player.Disable();
     }
-
     public enum PlayerState {
         jumping,
         idle,
@@ -377,6 +378,7 @@ public class Player : MonoBehaviour {
 
         StartInvulnerability();
         ResetMentalStateTimer();
+        SetMentalState(mentalState - 1f);
         health -= amount;
         Debug.Log("Player took damage, health is now " + health);
         if (health == 0)
@@ -427,7 +429,7 @@ public class Player : MonoBehaviour {
         if (mentalStateTimer >= mentalStateInterval)
         {
             mentalStateTimer -= mentalStateInterval; // allows catch-up if frame is long
-            AddMentalState(1);
+            SetMentalState(mentalState + 1f);
         }
     }
 
@@ -435,10 +437,14 @@ public class Player : MonoBehaviour {
     {
         mentalStateTimer = 0f;
     }
-
-    void AddMentalState(int point)
+    public void SetMentalState(float value)
     {
-        mentalState += point;
-        Debug.Log("Mental state increased, now it is " + mentalState);
+        float clamped = Mathf.Clamp(value, 0f, 10f);
+
+        if (Mathf.Approximately(clamped, mentalState))
+            return;
+
+        mentalState = clamped;
+        OnMentalStateChanged?.Invoke(mentalState);
     }
 }

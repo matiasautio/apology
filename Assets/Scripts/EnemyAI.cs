@@ -9,7 +9,7 @@ public class EnemyAI : MonoBehaviour {
     public bool isWalkingLeft = true;
 
     // Raycasting
-    const float groundRayLength = 0.05f;
+    const float groundRayLength = 0.1f;
     private BoxCollider2D box;
     float boxColliderheight;
     float boxColliderWidth;
@@ -152,7 +152,8 @@ public class EnemyAI : MonoBehaviour {
             grounded = true;
             velocity.y = 0;
             state = EnemyState.walking; 
-            pos.y = hit.point.y + boxColliderheight;
+            const float groundSkin = 0.01f;
+            pos.y = hit.point.y + boxColliderheight + groundSkin;
         }
         else
         {
@@ -188,6 +189,14 @@ public class EnemyAI : MonoBehaviour {
             }
             isWalkingLeft = !isWalkingLeft;
         }*/
+        if (isWalkingLeft)
+        {
+            direction = -1;
+        }
+        else
+        {
+            direction = 1;
+        }
         float rayLength = groundRayLength;
         float halfHeight = boxColliderheight;
         float halfWidth  = boxColliderWidth;
@@ -234,7 +243,6 @@ public class EnemyAI : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D col)
     {
-        Debug.Log(col.collider + " enterd");
         if (col.collider.CompareTag("Player"))
         {
             DamagePlayer(col.collider.GetComponent<Player>());
