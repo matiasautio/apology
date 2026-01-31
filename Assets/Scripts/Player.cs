@@ -281,7 +281,7 @@ public class Player : MonoBehaviour {
             if (hit.collider.CompareTag("Enemy"))
             {
                 bounce = true;
-                hit.collider.GetComponent<EnemyAI>().Crush();
+                //hit.collider.GetComponent<EnemyAI>().Crush();
             }
 
             if (playerState == PlayerState.jumping)

@@ -19,6 +19,6 @@ public GameObject Player2;
     IEnumerator WinWait() {
 
         yield return new WaitForSeconds (3);
-        Application.LoadLevel("Win");
+        //Application.LoadLevel("Win");
     }
 }

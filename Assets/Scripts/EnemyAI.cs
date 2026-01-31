@@ -24,7 +24,7 @@ public class EnemyAI : MonoBehaviour {
 
     public float timeBeforeDestroy = 1.0f;
 
-    private enum EnemyState {
+    public enum EnemyState {
 
         walking,
         falling,
@@ -32,32 +32,46 @@ public class EnemyAI : MonoBehaviour {
         idle
     }
 
-    private EnemyState state = EnemyState.falling;
+    public EnemyState state = EnemyState.falling;
 
     [SerializeField] int damage = 1;
 
-    // Start is called before the first frame update
+    public bool hasBeenVisible = false;
+    // Sprite
+    private SpriteRenderer sprite;
+    public Animator animator;
+
+    protected virtual void Awake()
+    {
+        
+    }
+
     void Start() {
 
         box = GetComponent<BoxCollider2D>();
         boxColliderheight = box.size.y * 0.5f; // make it half the size
         boxColliderWidth = box.size.x * 0.5f;
         enabled = false;
-        Fall ();
-        
+        // Set sprite
+        sprite = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
+        Fall();
     }
 
-    // Update is called once per frame
-    void Update() {
-        
-        UpdateEnemyPosition ();
+    protected virtual void Update()
+    {
+        UpdateEnemy();
+    }
+    protected virtual void UpdateEnemy()
+    {
+        UpdateEnemyPosition();
         CheckCrushed();
     }
 
     public void Crush () {
 
         state = EnemyState.dead;
-        //GetComponent<Animator>().SetBool("isCrushed", true);
+        animator.SetBool("walk", false);
         GetComponent<Collider2D>().enabled = false;
         shouldDie = true;
     }
@@ -79,50 +93,44 @@ public class EnemyAI : MonoBehaviour {
         }
     }
 
-    void UpdateEnemyPosition () {
-
-        if (state != EnemyState.dead) {
-
-            Vector3 pos = transform.localPosition;
-            Vector3 scale = transform.localScale;
-
-            if (state == EnemyState.falling) {
-
-                pos.y += velocity.y * Time.deltaTime;
-
-                velocity.y -= gravity * Time.deltaTime;
-            }
-
-            if (state == EnemyState.walking) {
-
-                if (isWalkingLeft) {
-
-                    pos.x -= velocity.x * Time.deltaTime;
-
-                    scale.x = - 1;
-                } else {
-
-                    pos.x += velocity.x * Time.deltaTime;
-                    scale.x = 1;
-                }
-
-            }
-
-            if (velocity.y <= 0)
-                pos = CheckGround (pos);
-            
-            CheckWalls (pos, scale.x);
-
-            transform.localPosition = pos;
-            transform.localScale = scale;
-
-            if (state == EnemyState.idle) {
-
-                pos.y += velocity.y * Time.deltaTime;
-                velocity.x = 0;
-                isWalkingLeft = true;
-            }
+    protected virtual void UpdateEnemyPosition()
+    {
+        if (state == EnemyState.dead) {
+            animator.SetBool("walk", false);
+            return;
         }
+
+        Vector3 pos = transform.localPosition;
+        Vector3 scale = transform.localScale;
+
+        if (state == EnemyState.falling)
+        {
+            pos.y += velocity.y * Time.deltaTime;
+            velocity.y -= gravity * Time.deltaTime;
+        }
+
+        if (state == EnemyState.walking)
+        {
+            if (isWalkingLeft)
+            {
+                pos.x -= velocity.x * Time.deltaTime;
+                sprite.flipX = false;
+            }
+            else
+            {
+                pos.x += velocity.x * Time.deltaTime;
+                sprite.flipX = true;
+            }
+            animator.SetBool("walk", true);
+        }
+
+        if (velocity.y <= 0)
+            pos = CheckGround(pos);
+
+        CheckWalls(pos, scale.x);
+
+        transform.localPosition = pos;
+        transform.localScale = scale;
     }
 
     Vector3 CheckGround (Vector3 pos) {
@@ -156,8 +164,9 @@ public class EnemyAI : MonoBehaviour {
     }
 
     // TODO modify this to use the better raycast setup
-    void CheckWalls (Vector3 pos, float direction) {
-
+    void CheckWalls (Vector3 pos, float direction)
+    {
+        /*
         Vector2 originTop = new Vector2 (pos.x + direction * 0.4f, pos.y + .5f - 0.2f);
         Vector2 originMiddle = new Vector2 (pos.x + direction * 0.4f, pos.y);
         Vector2 originBottom = new Vector2 (pos.x + direction * 0.4f, pos.y - .5f + 0.2f);
@@ -178,11 +187,43 @@ public class EnemyAI : MonoBehaviour {
                 hitRay = wallBottom;
             }
             isWalkingLeft = !isWalkingLeft;
+        }*/
+        float rayLength = groundRayLength;
+        float halfHeight = boxColliderheight;
+        float halfWidth  = boxColliderWidth;
+
+        Vector2 originTop = new Vector2(
+            pos.x + direction * halfWidth,
+            pos.y + halfHeight - 0.1f
+        );
+
+        Vector2 originMiddle = new Vector2(
+            pos.x + direction * halfWidth,
+            pos.y
+        );
+
+        Vector2 originBottom = new Vector2(
+            pos.x + direction * halfWidth,
+            pos.y - halfHeight + 0.1f
+        );
+
+        RaycastHit2D hitTop    = Physics2D.Raycast(originTop,    Vector2.right * direction, rayLength, wallMask);
+        RaycastHit2D hitMiddle = Physics2D.Raycast(originMiddle, Vector2.right * direction, rayLength, wallMask);
+        RaycastHit2D hitBottom = Physics2D.Raycast(originBottom, Vector2.right * direction, rayLength, wallMask);
+
+        RaycastHit2D hit = hitMiddle.collider ? hitMiddle :
+                        hitTop.collider ? hitTop :
+                        hitBottom;
+
+        if (hit.collider)
+        {
+            isWalkingLeft = !isWalkingLeft;
         }
     }
     
     void OnBecameVisible () {
         enabled = true;
+        hasBeenVisible = true;
     }
 
     void Fall() {
@@ -206,6 +247,6 @@ public class EnemyAI : MonoBehaviour {
 
     IEnumerator PlayerDeadWait() {
         yield return new WaitForSeconds(2);
-        Application.LoadLevel("GameOver");
+        //Application.LoadLevel("GameOver");
     }
 }
