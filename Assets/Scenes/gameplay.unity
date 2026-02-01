@@ -2161,6 +2161,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1267073977}
     - target: {fileID: 6271437297766991614, guid: 021df0e763ede427892cd6eeb830cf64, type: 3}
+      propertyPath: audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: dd3bd89a643da8c42b616a144c594f32, type: 3}
+    - target: {fileID: 6271437297766991614, guid: 021df0e763ede427892cd6eeb830cf64, type: 3}
       propertyPath: jumpVelocity
       value: 20
       objectReference: {fileID: 0}
@@ -2179,6 +2183,10 @@ PrefabInstance:
     - target: {fileID: 6271437297766991614, guid: 021df0e763ede427892cd6eeb830cf64, type: 3}
       propertyPath: flickerInterval
       value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6271437297766991614, guid: 021df0e763ede427892cd6eeb830cf64, type: 3}
+      propertyPath: footIntervalMax
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6271437297766991614, guid: 021df0e763ede427892cd6eeb830cf64, type: 3}
       propertyPath: wallMask.m_Bits
@@ -2724,11 +2732,11 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: dd3bd89a643da8c42b616a144c594f32, type: 3}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0

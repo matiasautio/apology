@@ -59,7 +59,12 @@ public class Player : MonoBehaviour {
     //public AudioSource SE;
     public AudioSource jumpSE;
     public AudioSource groundSE;
+    public AudioClip audioClip;
     bool groundCheck;
+
+    // Timer
+    float footInterval = 0;
+    public float footIntervalMax = 1;
 
     // dedicated source used to loop/stop the ground SFX so jumpSE remains free for one-shots
     AudioSource groundSESource;
@@ -227,6 +232,22 @@ public class Player : MonoBehaviour {
         walk = input_left || input_right;
         walk_left = input_left && !input_right;
         walk_right = !input_left && input_right;
+        Debug.Log(moveInput);
+
+        footInterval += Time.deltaTime;
+        if (footInterval >= footIntervalMax && moveInput.x != 0 && grounded) 
+        {
+            //groundSE.Stop();
+            groundSE.PlayOneShot(audioClip);
+            footInterval = 0;
+        }
+        // else 
+        // {
+        //     if(!groundSE.isPlaying)
+        //     {
+        //         groundSE.PlayOneShot(audioClip);
+        //     }
+        // }
     }
 
     Vector3 CheckWallRays(Vector3 pos, float direction)
