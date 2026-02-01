@@ -58,7 +58,7 @@ public class Player : MonoBehaviour {
     //SE
     //public AudioSource SE;
     public AudioSource jumpSE;
-    public AudioClip groundSE;
+    public AudioSource groundSE;
     bool groundCheck;
 
     // dedicated source used to loop/stop the ground SFX so jumpSE remains free for one-shots
@@ -423,31 +423,60 @@ public class Player : MonoBehaviour {
         OnMentalStateChanged?.Invoke(mentalState);
     }
 
-    /*
-    private void OnCollisionEnter2D(Collision2D other)
+    private void OnCollisionStay2D(Collision2D other)
     {
-        if (!other.gameObject.tag("Ground"))
+        // only care about ground collisions here
+        if (!other.transform.tag.Contains("Gound"))
         {
-            if (groundSESource != null && groundSESource.isPlaying)
-                groundSESource.Stop();
+            groundCheck = false;
+            if (groundSE != null && groundSE.isPlaying) groundSE.Stop();
+            if (groundSESource != null && groundSESource.isPlaying) groundSESource.Stop();
             return;
         }
 
-        if (groundCheck)
+        if (other.transform.tag.Contains("Gound"))
+        {        
+            groundCheck = true;
+        }
+
+        // consider the player 'moving' if input says so or horizontal velocity is above a small threshold
+        bool isMoving = walk || Mathf.Abs(velocity.x) > 0.01f;
+
+        // prefer user-assigned AudioSource (groundSE). fall back to the internal source if needed.
+        if (groundSE != null && groundSE.clip != null)
         {
-            if (groundSE != null)
+            groundSE.loop = true;
+            if (isMoving)
             {
-                if (groundSESource.clip != groundSE)
-                    groundSESource.clip = groundSE;
-                if (!groundSESource.isPlaying)
-                    groundSESource.Play();
+                if (!groundSE.isPlaying) groundSE.Play();
+            }
+            else
+            {
+                if (groundSE.isPlaying) groundSE.Stop();
             }
         }
-        else
+        else if (groundSESource != null && (groundSESource.clip != null || (groundSE != null && groundSE.clip != null)))
         {
-            if (groundSESource != null && groundSESource.isPlaying)
-                groundSESource.Stop();
+            // ensure internal source has a clip if possible
+            if (groundSESource.clip == null && groundSE != null) groundSESource.clip = groundSE.clip;
+            groundSESource.loop = true;
+            if (isMoving)
+            {
+                if (!groundSESource.isPlaying) groundSESource.Play();
+            }
+            else
+            {
+                if (groundSESource.isPlaying) groundSESource.Stop();
+            }
         }
     }
-    */
+
+    private void OnCollisionExit2D(Collision2D other)
+    {
+        if (!other.collider.CompareTag("Ground")) return;
+        groundCheck = false;
+        if (groundSE != null && groundSE.isPlaying) groundSE.Stop();
+        if (groundSESource != null && groundSESource.isPlaying) groundSESource.Stop();
+    }
+    
 }
