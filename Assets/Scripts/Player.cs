@@ -238,7 +238,6 @@ public class Player : MonoBehaviour {
         walk = input_left || input_right;
         walk_left = input_left && !input_right;
         walk_right = !input_left && input_right;
-        Debug.Log(moveInput);
 
         footInterval += Time.deltaTime;
         if (footInterval >= footIntervalMax && moveInput.x != 0 && grounded) 
