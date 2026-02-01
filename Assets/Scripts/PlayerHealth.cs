@@ -66,7 +66,9 @@ public class PlayerHealth : MonoBehaviour
 
         if (collidedWithEnemy)
         {
-            TakeDamage(1);
+            int damageToReceive = 1;
+            damageToReceive = (int) otherGO.GetComponent<EnemyAI>()?.damage;
+            TakeDamage(damageToReceive);
 
             // --- オプション: ノックバックを入れる場合は以下のコメントを外してください ---
             // if (rb != null && collision.contactCount > 0)
@@ -84,6 +86,11 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        // If player falls down to a pit they instantly die.
+        if(damage > 900)
+        {
+            Die();
+        }
         if (isInvincible) return;
         currentHp -= damage;
         Debug.Log("痛い！ 残りHP: " + currentHp);

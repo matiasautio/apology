@@ -34,7 +34,7 @@ public class EnemyAI : MonoBehaviour {
 
     protected EnemyState state = EnemyState.falling;
 
-    [SerializeField] int damage = 1;
+    public int damage = 1;
 
     protected bool hasBeenVisible = false;
     // Sprite
