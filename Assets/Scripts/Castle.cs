@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class Castle : MonoBehaviour
@@ -16,15 +17,15 @@ public class Castle : MonoBehaviour
             Player player = other.GetComponent<Player>();
             if (player.MentalState <= neutralEndingThreshold)
             {
-                Debug.Log("Bad ending!");
+                SceneManager.LoadScene("BadEnding");
             }
             else if (player.MentalState >= neutralEndingThreshold && player.MentalState < goodEndingThreshold)
             {
-                Debug.Log("Neutral ending!");
+                SceneManager.LoadScene("NeutralEnding");
             }
             else if (player.MentalState >= goodEndingThreshold)
             {
-                Debug.Log("Good ending!");
+                SceneManager.LoadScene("GoodEnding");
             }
             //StartCoroutine(WinWait());
         }
