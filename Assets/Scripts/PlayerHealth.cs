@@ -7,7 +7,7 @@ public class PlayerHealth : MonoBehaviour
     public int maxHp = 3;
     private int currentHp;
     public float invincibilityTime = 1.5f; // 無敵時間
-    private bool isInvincible = false;
+    public bool isInvincible = false;
 
     [Header("UI Settings")]
     public GameObject[] hpIcons;

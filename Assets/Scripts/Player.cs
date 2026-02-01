@@ -20,6 +20,8 @@ public class Player : MonoBehaviour {
     // Sprite
     private SpriteRenderer sprite;
     private Animator animator;
+    [SerializeField] GameObject niwakaMask;
+    [SerializeField] float maskInvincibilityDuration = 5f;
 
     // Using the Input system
     private PlayerInputActions inputActions;
@@ -131,10 +133,14 @@ public class Player : MonoBehaviour {
             if (walk_left) {
                 velocity.x = -walkVelocity;
                 sprite.flipX = true;
+                niwakaMask.GetComponent<SpriteRenderer>().flipX = true;
+                niwakaMask.transform.localPosition = new Vector2(-0.1f, 0.488f);
             }
             else if (walk_right) {
                 velocity.x = walkVelocity;
                 sprite.flipX = false;
+                niwakaMask.GetComponent<SpriteRenderer>().flipX = false;
+                niwakaMask.transform.localPosition = new Vector2(0.087f, 0.488f);
             }
             if (inputActions.Player.Sprint.IsPressed()) {
                 run = true;
@@ -360,9 +366,22 @@ public class Player : MonoBehaviour {
     public void AddNiwaka()
     {
         niwakas += 1;
-        playerHealth.BecomeInvincible();
+        //playerHealth.BecomeInvincible();
+        StartCoroutine(StartNiwaka());
         Debug.Log("Niwaka added, now player has " + niwakas);
     }
+
+    private IEnumerator StartNiwaka()
+    {
+        niwakaMask.SetActive(true);
+        playerHealth.isInvincible = true;
+        gameObject.layer = LayerMask.NameToLayer("PlayerInvincible");
+        yield return new WaitForSeconds(maskInvincibilityDuration);
+        niwakaMask.SetActive(false);
+        playerHealth.isInvincible = false;
+        gameObject.layer = LayerMask.NameToLayer("Player");
+    }
+
     public void AddNiwakaSenbei()
     {
         niwakaSenbeis += 1;

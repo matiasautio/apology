@@ -1980,6 +1980,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4560527640147758833, guid: 021df0e763ede427892cd6eeb830cf64, type: 3}
+      propertyPath: m_FlipX
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6271437297766991614, guid: 021df0e763ede427892cd6eeb830cf64, type: 3}
       propertyPath: gravity
       value: 65
@@ -2026,6 +2030,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6704965966076294374, guid: 021df0e763ede427892cd6eeb830cf64, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8371044941189239778, guid: 021df0e763ede427892cd6eeb830cf64, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
