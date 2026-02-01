@@ -55,6 +55,15 @@ public class Player : MonoBehaviour {
     // Health
     PlayerHealth playerHealth;
 
+    //SE
+    //public AudioSource SE;
+    public AudioSource jumpSE;
+    public AudioClip groundSE;
+    bool groundCheck;
+
+    // dedicated source used to loop/stop the ground SFX so jumpSE remains free for one-shots
+    AudioSource groundSESource;
+
     private void Awake()
     {
         inputActions = new PlayerInputActions();
@@ -65,6 +74,13 @@ public class Player : MonoBehaviour {
         // Set sprite
         sprite = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
+        jumpSE = GetComponent<AudioSource>();
+
+        // create a dedicated audio source for ground SFX (loop-capable)
+        groundSESource = gameObject.AddComponent<AudioSource>();
+        groundSESource.playOnAwake = false;
+        groundSESource.loop = true;
+        groundSESource.spatialBlend = 0f; // 2D sound
     }
 
     private void OnEnable()
@@ -155,6 +171,7 @@ public class Player : MonoBehaviour {
         {
             velocity.y = jumpVelocity;
             grounded = false;
+            jumpSE.PlayOneShot(jumpSE.clip);
             playerState = PlayerState.jumping;
         }
 
@@ -405,4 +422,32 @@ public class Player : MonoBehaviour {
         mentalState = clamped;
         OnMentalStateChanged?.Invoke(mentalState);
     }
+
+    /*
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (!other.gameObject.tag("Ground"))
+        {
+            if (groundSESource != null && groundSESource.isPlaying)
+                groundSESource.Stop();
+            return;
+        }
+
+        if (groundCheck)
+        {
+            if (groundSE != null)
+            {
+                if (groundSESource.clip != groundSE)
+                    groundSESource.clip = groundSE;
+                if (!groundSESource.isPlaying)
+                    groundSESource.Play();
+            }
+        }
+        else
+        {
+            if (groundSESource != null && groundSESource.isPlaying)
+                groundSESource.Stop();
+        }
+    }
+    */
 }
