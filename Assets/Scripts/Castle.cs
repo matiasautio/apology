@@ -2,17 +2,33 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Castle : MonoBehaviour {
-public GameObject Player;
-public GameObject Player2;
+public class Castle : MonoBehaviour
+{
 
-    void OnTriggerEnter2D (Collider2D other) {
+    [SerializeField] int badEndingThreshold = 0;
+    [SerializeField] int neutralEndingThreshold = 5;
+    [SerializeField] int goodEndingThreshold = 10;
+
+    void OnTriggerEnter2D (Collider2D other)
+    {
 
         if (other.tag == "Player") {
 
-            StartCoroutine(WinWait());
-            Player.GetComponent<Animator>().SetBool("isWin", true);
-            Player2.GetComponent<Animator>().SetBool("isWin", true);
+            // Check player mental state
+            Player player = other.GetComponent<Player>();
+            if (player.MentalState <= neutralEndingThreshold)
+            {
+                Debug.Log("Bad ending!");
+            }
+            else if (player.MentalState >= neutralEndingThreshold && player.MentalState < goodEndingThreshold)
+            {
+                Debug.Log("Neutral ending!");
+            }
+            else if (player.MentalState >= goodEndingThreshold)
+            {
+                Debug.Log("Good ending!");
+            }
+            //StartCoroutine(WinWait());
         }
     }
 

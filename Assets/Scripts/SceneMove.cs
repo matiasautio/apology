@@ -8,4 +8,11 @@ public class SceneMove : MonoBehaviour
     {
         SceneManager.LoadScene(sceneName);
     }
+    void Update()
+    {
+        if (Input.anyKey)
+        {
+            SceneManager.LoadScene(sceneName);
+        }
+    }
 }
