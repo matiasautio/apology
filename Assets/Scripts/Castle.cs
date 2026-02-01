@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class Castle : MonoBehaviour
 {
-
-    [SerializeField] int badEndingThreshold = 0;
     [SerializeField] int neutralEndingThreshold = 5;
     [SerializeField] int goodEndingThreshold = 10;
 

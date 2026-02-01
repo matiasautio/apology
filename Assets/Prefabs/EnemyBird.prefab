@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 774273921000184131}
   - component: {fileID: 4298482408741563554}
   - component: {fileID: 737467268996683799}
+  - component: {fileID: 2933305437492132895}
   m_Layer: 6
   m_Name: EnemyBird
   m_TagString: Enemy
@@ -215,7 +216,53 @@ MonoBehaviour:
   damage: 1
   rockPrefab: {fileID: 612009795914666679, guid: 5f7802111bf28419aa4897d18f555f4f, type: 3}
   dropInterval: 3
-  dropSpeed: 5
+  dropSpeed: 6
   flySpeed: 2
   verticalAmplitude: 0.2
   verticalFrequency: 1
+--- !u!61 &2933305437492132895
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9150898762170590346}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: -1, y: -4}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.2094594, y: 0.5743243}
+    newSize: {x: 0.32, y: 0.32}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1, y: 5}
+  m_EdgeRadius: 0

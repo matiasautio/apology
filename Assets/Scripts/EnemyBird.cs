@@ -50,7 +50,15 @@ public class EnemyBird : EnemyAI
         transform.localPosition = pos;
         animator.SetBool("walk", true);
     }
+    void OnTriggerEnter2D (Collider2D other)
+    {
 
+        // Poop on player when they enter the trigger infront of the bird
+        if (other.tag == "Player")
+        {
+            DropRock();
+        }
+    }
     void DropRock()
     {
         GameObject rock = Instantiate(
